@@ -8,6 +8,9 @@ require 'devise-pki/version'
 
 module Devise
 
+  mattr_accessor :pki_key_owner_model
+  @@pki_key_owner_model = nil
+  
   mattr_accessor :pki_key_size
   @@pki_key_size = 1024 
 
