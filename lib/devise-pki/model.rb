@@ -45,7 +45,6 @@ module Devise
       end
       
       module ClassMethods
-        Devise::Models.config(self, :pkikeys)
         Devise::Models.config(self, :pki_default_cipher)
         Devise::Models.config(self, :pki_key_size)
       end
