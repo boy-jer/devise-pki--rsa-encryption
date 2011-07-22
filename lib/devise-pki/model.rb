@@ -32,7 +32,7 @@ module Devise
         ch = OpenSSL::Cipher.new(self.class.pki_default_cipher)
         ch.key = password_hash(ch.block_size)
         ch = mode=:enc ? ch.encrypt : ch.decrypt
-        ch.update(msg)+ch.finalize
+        ch.update(msg)+ch.final
       end     
       
       def password_hash(blocksize)
