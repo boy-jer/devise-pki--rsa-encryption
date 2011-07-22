@@ -1,6 +1,6 @@
 module DevisePKI
   module Schema
-    def pkikeys
+    def pkikey
       apply_devise_schema :pki_pub_key,Text
       apply_devise_schema :pki_priv_key_enc,Text
     end
