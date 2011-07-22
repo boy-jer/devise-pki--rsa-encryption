@@ -1,7 +1,7 @@
 module Devise
   module Models
     # PKIKeys is responsible for providing and maintaining the public and private keys of a user
-      module Pkikeys
+      module Pkikey
     
       extend ActiveSupport::Concern
 
@@ -39,7 +39,7 @@ module Devise
         raise "User model does not have a cached copy of password" unless @password
         
         #FIXME: This should include the RAILS secret to prevent brute force
-        hs = @password # + rails key
+        hs = @password #+ self.password_salt
         #by default max key size is set by AES-256-OFB so if it has been set higher use better hash
         blocksize>256 ? Digest::SHA512.new(hs) : Digest::SHA256.new(hs)
       end
