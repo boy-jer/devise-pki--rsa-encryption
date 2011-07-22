@@ -31,7 +31,7 @@ module Devise
       def pass_cipher(mode, msg)
         ch = OpenSSL::Cipher.new(self.class.pki_default_cipher)
         ch.key = password_hash(ch.block_size)
-        ch = mode=:enc ? ch.encrypt , ch.decrypt
+        ch = mode=:enc ? ch.encrypt : ch.decrypt
         ch.update(msg)+ch.finalize
       end     
       
@@ -41,11 +41,7 @@ module Devise
         #FIXME: This should include the RAILS secret to prevent brute force
         hs = @password # + rails key
         #by default max key size is set by AES-256-OFB so if it has been set higher use better hash
-        if blocksize>256
-          Digest::SHA512.new(hs)
-        else
-          Digest::SHA256.new(hs)
-        end
+        blocksize>256 ? Digest::SHA512.new(hs) : Digest::SHA256.new(hs)
       end
       
       module ClassMethods
