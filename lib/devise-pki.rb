@@ -16,4 +16,4 @@ module Devise
 
 end
 
-Devise.add_module :pkikeys, :model => 'devise-pki/model'
+Devise.add_module :pkikey, :model => 'devise-pki/model'
