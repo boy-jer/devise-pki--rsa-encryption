@@ -1,0 +1,121 @@
+= DevisePKI
+
+It adds support to devise[http://github.com/plataformatec/devise] for public key infrastructure (PKI).
+
+DevisePKI currently only supports Rails 3. While the core cyphers and underlying functionality is rigidly defined, the user API is currently in a state of flux and may change to accommodate other ORM's. 
+
+This security model stores a public key and encrypted private key in the user model.  These keys are used to encrypt and decrypt randomly generated asymmetric keys (AES, DES, Blowfish) that are tied to each record containing secure data. Using this strategy it is possible for a user to copy their key to another user only using their password (sharing the encrypted record), knowing that the 2nd party can only access the record by supplying their password. It is also possible to provide "M of N" keys however a good generalised strategy for this has not been established.
+
+This scheme should only ever be used over HTTPS.
+
+== Installation for Rails ~> 3.0 and Devise ~> 1.2
+
+Install DevisePKI gem, it will also install dependencies (such as devise and warden):
+
+  gem install devise-pki
+
+Add DevisePKI to your Gemfile (and Devise if you weren't using them):
+
+  gem 'devise', '~> 1.2.0'
+  gem 'devise-pki', '~> 0.4.0'
+
+=== Automatic installation
+
+Run the following generator to add DevisePKI’s keychain model:
+
+  rails generate devise_pki:keychain MODEL
+
+Next you add the DevisePKI to any of your Devise models using the following generator:
+
+  rails generate devise_pki:user MODEL
+
+Replace MODEL with the class name you want to support DevisePKI, like User, Admin, etc. This will add the :pkikeys flag to your model's Devise modules. The generator will also create a migration file (if your ORM requires one).
+
+=== Manual installation
+
+Manual installation should be performed after Devise has been setup.
+
+Add :pkikeys to the <tt>devise</tt> call in your model (we’re assuming here you already have a User model with some Devise modules):
+
+  class User < ActiveRecord::Base
+    devise :database_authenticatable, :confirmable, :pkikeys
+  end
+
+Add t.pkikeys to your Devise model migration:
+
+  create_table :users do
+    ...
+    t.pkikeys
+    ...
+  end
+
+or for a model that already exists, define a migration to add DevisePKI to your model:
+
+  change_table :users do |t|
+    t.string   :pki_pub_key
+  	t.string   :pki_priv_key_enc
+  end
+
+== Model configuration
+
+DevisePKI has two configuration settings:
+
+* pki_key_size: The size of the generated RSA keys (512 to 4096, remembering that larger key sizes take exponentially longer to create and might need to be handled in a background task).
+* pki_default_enc:  The default symetric encryption scheme. The default is AES256OFB, and a list can be found by running:
+
+  irb> puts *OpenSSL::Cipher.ciphers
+
+  devise :database_authenticatable, :confirmable, :pkikeys, :pki_key_size => 4096, :pki_default_enc=>"AES-256-OFB"
+
+== Usage
+
+=== Creating an Encryption Key
+
+  key = current_user.keychain.build
+  
+This creates a random IV and pki_default_enc key, associates it with the user. After the key has been built it can be used to create encryption and decryption sessions:
+
+  enc = key.encryption_handle
+  ciphertext = enc.update(plaintext)
+  ...
+  ciphertext += enc.update(plaintext)
+  ciphertext += enc.finalize()
+
+Before saving the key and IV are encrypted using the users public key and the plaintext copy is erased. Previously instantiated encryption and decryption handles are still valid. Once the IV and key are encrypted, the user record must be called to decrypt them before another encryption or decryption handle can be instanciated. This requires the user model to contain the clear text password eg.
+
+  current_user.cache_password = params[:password]
+  da = DigitalAsset.find(params[:id])
+  dec = current_user.keychain.where(:digital_asset_id=>da.id).decryption_handle
+  special_data = dec.update(da.encrypted_special_data)+dec.finalize
+  
+For models obeying the convention of prepending encryption_ to the start of fields the following can be used:
+
+  class DigitalAsset << ORMSuperClass
+    field :encrypted_special_data, :type=>String
+    ...
+    attr_encrypted :special_data, ...
+  end
+
+Which can then be accessed by:
+
+  da = DigitalAsset.find(params[:id])
+  da.user_key(current_user,params[:password])
+  da.special_data
+ 
+== Other ORMs
+
+DevisePKI supports ActiveRecord and Mongoid, like Devise.
+
+== Contributors
+
+== Note on Patches/Pull Requests
+ 
+* Fork the project.
+* Make your feature addition or bug fix.
+* Add tests for it. This is important so I don't break it in a future version unintentionally.
+* Commit, do not mess with rakefile, version, or history. (if you want to have your own version, that is fine but bump version in a commit by itself I can ignore when I pull)
+* Send me a pull request. Bonus points for topic branches.
+
+== Copyright
+
+Copyright (c) 2011 David Middleton. See LICENSE for details.
