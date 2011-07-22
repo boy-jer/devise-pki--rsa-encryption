@@ -10,7 +10,7 @@ Gem::Specification.new do |s|
   s.email        = ["david.middleton@gmail.com"]
   s.homepage     = "https://github.com/peon374/devise-pki"
   s.summary      = "A PKI keychain schema for devise"
-  s.description  = "Adds support for public key infrastructure to the devise user model."
+  s.description  = "Adds support for public key infrastructure to the devise user model. This code is alpha and until this message changes it is not fit for any purpose."
   s.files        = Dir["lib/**/*"] + %w[LICENSE README.rdoc]
   s.require_path = "lib"
   s.rdoc_options = ["--main", "README.rdoc", "--charset=UTF-8"]

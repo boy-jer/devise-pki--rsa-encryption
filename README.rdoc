@@ -91,9 +91,8 @@ Before saving the key and IV are encrypted using the users public key and the pl
 For models obeying the convention of prepending encryption_ to the start of fields the following can be used:
 
   class DigitalAsset << ORMSuperClass
-    field :encrypted_special_data, :type=>String
-    ...
-    attr_encrypted :special_data, ...
+    attr_encrypted :special_data, :type=>{String|Binary}
+        
   end
 
 Which can then be accessed by:

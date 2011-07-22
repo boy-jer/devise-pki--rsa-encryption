@@ -1,7 +1,7 @@
 module Devise
   module Models
     # PKIKeys is responsible for providing and maintaining the public and private keys of a user
-      module Pkikey
+    module Pkikey
     
       extend ActiveSupport::Concern
 
@@ -42,10 +42,10 @@ module Devise
         blocksize>256 ? Digest::SHA512.digest(hs) : Digest::SHA256.digest(hs)
       end
       
-      module ClassMethods
+      module ClassMethods   
         Devise::Models.config(self, :pki_default_cipher)
         Devise::Models.config(self, :pki_key_size)
       end
-    end
+    end   
   end
 end
