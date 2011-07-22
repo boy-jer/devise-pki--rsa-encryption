@@ -65,7 +65,7 @@ DevisePKI has two configuration settings:
 
   irb> puts *OpenSSL::Cipher.ciphers
 
-  devise :database_authenticatable, :confirmable, :pkikeys, :pki_key_size => 4096, :pki_default_enc=>"AES-256-OFB"
+  devise :database_authenticatable, :confirmable, :pkikeys, :pki_key_size => 4096, :pki_default_cipher=>"AES-256-OFB"
 
 == Usage
 
@@ -73,7 +73,7 @@ DevisePKI has two configuration settings:
 
   key = current_user.keychain.build
   
-This creates a random IV and pki_default_enc key, associates it with the user. After the key has been built it can be used to create encryption and decryption sessions:
+This creates a random IV and pki_default_cipher key, associates it with the user. After the key has been built it can be used to create encryption and decryption sessions:
 
   enc = key.encryption_handle
   ciphertext = enc.update(plaintext)
