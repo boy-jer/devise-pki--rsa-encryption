@@ -27,6 +27,10 @@ CONTENT
           end
         end
       end
+
+      hook_for :orm do |resp|
+        STDERR.puts resp.inspect
+      end
  
       def copy_user_asset_key_model
         path = File.join("app","models", "#{file_path}_asset_key.rb")
