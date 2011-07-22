@@ -1,6 +1,6 @@
 require 'devise'
 require 'openssl'
-require 'digests/sha2'
+require 'digest/sha2'
 
 require 'devise-pki/model'
 require 'devise-pki/schema'
