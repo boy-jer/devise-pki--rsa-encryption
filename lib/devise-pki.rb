@@ -2,10 +2,6 @@ require 'devise'
 require 'openssl'
 require 'digests/sha2'
 
-#module DevisePKI
-#  autoload :Inviter, 'devise-pki/inviter'
-#end
-
 require 'devise-pki/model'
 require 'devise-pki/schema'
 require 'devise-pki/version'

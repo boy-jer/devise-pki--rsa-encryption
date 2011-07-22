@@ -35,13 +35,13 @@ module Devise
         ch.update(msg)+ch.finalize
       end     
       
-      def password_hash(bs)
+      def password_hash(blocksize)
         raise "User model does not have a cached copy of password" unless @password
         
         #FIXME: This should include the RAILS secret to prevent brute force
         hs = @password # + rails key
         #by default max key size is set by AES-256-OFB so if it has been set higher use better hash
-        if bs>256
+        if blocksize>256
           Digest::SHA512.new(hs)
         else
           Digest::SHA256.new(hs)

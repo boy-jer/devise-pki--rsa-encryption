@@ -17,7 +17,7 @@ Install DevisePKI gem, it will also install dependencies (such as devise and war
 Add DevisePKI to your Gemfile (and Devise if you weren't using them):
 
   gem 'devise', '~> 1.2.0'
-  gem 'devise-pki', '~> 0.4.0'
+  gem 'devise-pki'
 
 === Automatic installation
 
@@ -53,7 +53,7 @@ or for a model that already exists, define a migration to add DevisePKI to your 
 
   change_table :users do |t|
     t.string   :pki_pub_key
-  	t.string   :pki_priv_key_enc
+    t.string   :pki_priv_key_enc
   end
 
 == Model configuration
