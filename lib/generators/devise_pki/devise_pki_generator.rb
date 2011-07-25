@@ -21,7 +21,7 @@ module DevisePki
             inject_into_file(devise_initializer_path, :before => "  # ==> Configuration for :confirmable\n") do
 <<-CONTENT
   # ==> User class
-  config.pki_key_owner_class=:#{class_name.underscore}
+  config.pki_key_owner_model=:#{class_name.underscore}
 CONTENT
             end
           end

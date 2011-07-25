@@ -4,5 +4,5 @@ class <%= class_name %>AssetKey
   field :encryption_key
 
   belongs_to :pki_encryptable, polymorphic: true
-  belongs_to :<%= class_name.underscore $>
+  belongs_to :<%= class_name.underscore %>
 end

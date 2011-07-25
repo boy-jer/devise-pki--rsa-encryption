@@ -21,15 +21,9 @@ Add DevisePKI to your Gemfile (and Devise if you weren't using them):
 
 === Automatic installation
 
-Run the following generator to add DevisePKI’s keychain model:
+Run the following generator to add DevisePKI’s keychain model to the user model:
 
-  rails generate devise_pki:keychain MODEL
-
-Next you add the DevisePKI to any of your Devise models using the following generator:
-
-  rails generate devise_pki:user MODEL
-
-Replace MODEL with the class name you want to support DevisePKI, like User, Admin, etc. This will add the :pkikeys flag to your model's Devise modules. The generator will also create a migration file (if your ORM requires one).
+  rails generate devise_pki MODEL
 
 === Manual installation
 
@@ -69,37 +63,28 @@ DevisePKI has two configuration settings:
 
 == Usage
 
-=== Creating an Encryption Key
+For each model that has encrypted data use the following:
 
-  key = current_user.keychain.build
+  class CreditCard
+    include Mongoid::Document
+    include Mongoid::
+
+  #Create a new object
+  encobject = EncObject.new(:users=>[current_user],
+                  :ccnum=>"2345 4536 1234 5655", 
+                  :cvv=>"342")
+
+  #Update an object
+  current_user.cache_password=params[:password]
+  encobject = EncObject.find(params[:id])
+  encobject.current_user = current_user
+  encobject.update_attributes(param[:encobject])
+
+  #Sharing a model with encrypted fields
+  current_user.cache_password=params[:password]
+  encobject.current_user=current_user
+  encobject.add_user(User.find(params[:share_id]))
   
-This creates a random IV and pki_default_cipher key, associates it with the user. After the key has been built it can be used to create encryption and decryption sessions:
-
-  enc = key.encryption_handle
-  ciphertext = enc.update(plaintext)
-  ...
-  ciphertext += enc.update(plaintext)
-  ciphertext += enc.finalize()
-
-Before saving the key and IV are encrypted using the users public key and the plaintext copy is erased. Previously instantiated encryption and decryption handles are still valid. Once the IV and key are encrypted, the user record must be called to decrypt them before another encryption or decryption handle can be instanciated. This requires the user model to contain the clear text password eg.
-
-  current_user.cache_password = params[:password]
-  da = DigitalAsset.find(params[:id])
-  dec = current_user.keychain.where(:digital_asset_id=>da.id).decryption_handle
-  special_data = dec.update(da.encrypted_special_data)+dec.finalize
-  
-For models obeying the convention of prepending encryption_ to the start of fields the following can be used:
-
-  class DigitalAsset << ORMSuperClass
-    attr_encrypted :special_data, :type=>{String|Binary}
-        
-  end
-
-Which can then be accessed by:
-
-  da = DigitalAsset.find(params[:id])
-  da.user_key(current_user,params[:password])
-  da.special_data
  
 == Other ORMs
 

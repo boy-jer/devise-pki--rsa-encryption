@@ -29,6 +29,6 @@ end
 
 Devise.add_module :pkikey, :model => 'devise-pki/model'
 
-#require 'devise-pki/orm/mongoid' if defined?(Mongoid)
+require 'devise-pki/orm/mongoid' if defined?(Mongoid)
 
    
