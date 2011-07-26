@@ -15,15 +15,20 @@ module DevisePki
         if File.exist?(devise_initializer_path)
           old_content = File.read(devise_initializer_path)
 
-          if old_content.match(Regexp.new(/^\s# ==> User class\n/))
-            false
-          else
-            inject_into_file(devise_initializer_path, :before => "  # ==> Configuration for :confirmable\n") do
+          if old_content.match(Regexp.new(/^\s# ==> PKI User class/))
+            sub=/####PKI Code Block.*####PKI Code Block/
+            gsub_file(devise_initializer_path,sub,"") 
+          end
+          
+          inject_into_file(devise_initializer_path, :before => "  # ==> Configuration for :confirmable\n") do
 <<-CONTENT
-  # ==> User class
+  ####PKI Code Block
+  config.pki_key_size=2048
   config.pki_key_owner_model=:#{class_name.underscore}
+  config.pki_priv_key_seed="#{Digest::SHA512.new(OpenSSL::PKey::RSA.generate(4096).to_pem).hexdigest}"
+  config.pki_hash_loop=500
+  ####PKI Code Block
 CONTENT
-            end
           end
         end
       end
@@ -31,11 +36,8 @@ CONTENT
       hook_for :orm do |resp|
         STDERR.puts resp.inspect
       end
- 
-      def copy_user_asset_key_model
-        path = File.join("app","models", "#{file_path}_asset_key.rb")
-        template config.generators.orm.to_s+".rb", path
-      end
+      
+      nil
     end
   end
 end

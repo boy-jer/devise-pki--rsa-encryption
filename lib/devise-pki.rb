@@ -16,7 +16,13 @@ module Devise
 
   mattr_accessor :pki_default_cipher
   @@pki_default_cipher="AES-256-OFB"
-
+  
+  mattr_accessor :pki_priv_key_seed
+  @@pki_priv_key_seed=nil
+  
+  mattr_accessor :pki_hash_loop
+  @@pki_hash_loop=100
+  
 # FIXME: Need to work out the work flow for user encrypted fields.
 #  class Railtie < Rails::Railtie
 #    initializer "devise.active_record" do

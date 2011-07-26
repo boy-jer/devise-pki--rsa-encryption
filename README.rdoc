@@ -65,27 +65,43 @@ DevisePKI has two configuration settings:
 
 For each model that has encrypted data use the following:
 
+  class 
+
   class CreditCard
     include Mongoid::Document
-    include Mongoid::
+    include Mongoid::Encryptable
+    
+    attr_encrypted :ccnum
+    attr_encrypted :cvv
+    attr_encrypted :name
+    attr_encrypted :expires
+    
+    field :cardhint, :type=>String, :length=>16
+  end
+  
+Creation of an object does not require the user password because data is only moving from plaintext to cyphertext.
 
   #Create a new object
-  encobject = EncObject.new(:users=>[current_user],
-                  :ccnum=>"2345 4536 1234 5655", 
-                  :cvv=>"342")
+  cc = CreditCard.create(:users=>[current_user], :ccnum=>params[:ccnum], 
+                  :cvv=>params[:cvv], :name=>params[:name], 
+                  :cardhint=>("#"*12)+params[:ccnum][-5..-1]);
+
+Updating an object requires a password because the object is read, modified, and written (reading requires private key, hence user password).
 
   #Update an object
   current_user.cache_password=params[:password]
-  encobject = EncObject.find(params[:id])
-  encobject.current_user = current_user
-  encobject.update_attributes(param[:encobject])
+  cc = CreditCard.find(params[:id])
+  cc.current_user = current_user
+  cc.update_attributes(param[:credit_card])
+
+Sharing an object requires a user with access to the object to provide their password. This is used to decrypt the AES key of the object which is then encrypted with the new users public key.
 
   #Sharing a model with encrypted fields
   current_user.cache_password=params[:password]
   encobject.current_user=current_user
   encobject.add_user(User.find(params[:share_id]))
   
- 
+
 == Other ORMs
 
 DevisePKI supports ActiveRecord and Mongoid, like Devise.
