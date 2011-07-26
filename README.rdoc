@@ -46,8 +46,8 @@ Add t.pkikeys to your Devise model migration:
 or for a model that already exists, define a migration to add DevisePKI to your model:
 
   change_table :users do |t|
-    t.string   :pki_pub_key
-    t.string   :pki_priv_key_enc
+    t.string   :pki_pub_key_pem
+    t.string   :pki_priv_key_pem
   end
 
 == Model configuration
