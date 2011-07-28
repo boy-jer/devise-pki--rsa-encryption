@@ -1,18 +1,18 @@
 = DevisePKI
 
-*IMPORTANT:* This code is incomplete, and does not have any test framework to validate the security that it is supposed to supply. Till I have time to write coverage tests to verify that there is no plaintext leakage for each of the ORM's this code should not be put in any production environment. It is currently under heavy development and the ActiveRecord support is incomplete, however I am using it in a mongoid rails-3.1 application successfully. If you think this module is going to be useful to you send me a message and I will try and prioritize the features you need. 
+*IMPORTANT:* This code is incomplete and does not have any test framework to validate the security that it supplies. Until I have time to write coverage tests to verify that there is no plaintext leakage for each of the ORMs, this code should not be put in any production environment. It is currently under heavy development and the ActiveRecord support is incomplete, however I am using it in a Mongoid/Rails-3.1 application successfully. If you think this module will be useful to you, send me a message and I will prioritise the features you need. 
 
 It adds support to devise[http://github.com/plataformatec/devise] for public key infrastructure (PKI).
 
-DevisePKI currently only supports Rails 3. While the core cyphers and underlying functionality is rigidly defined, the user API is currently in a state of flux and may change to accommodate other ORM's. 
+DevisePKI currently only supports Rails 3. While the core cyphers and underlying functionality is rigidly defined, the user API is currently in a state of flux and may change to accommodate other ORMs. 
 
-This security model stores a public key and encrypted private key in the user model.  These keys are used to encrypt and decrypt randomly generated asymmetric keys (AES, DES, Blowfish) that are tied to each record containing secure data. Using this strategy it is possible for a user to copy their key to another user only using their password (sharing the encrypted record), knowing that the 2nd party can only access the record by supplying their password. It is also possible to provide "M of N" keys however a good generalised strategy for this has not been established.
+This security model stores a public key and encrypted private key in the user model.  These keys are used to encrypt and decrypt randomly generated asymmetric keys (AES, DES, Blowfish) that are tied to each record containing secure data. Using this strategy it is possible for a user to copy their key to another user only using their password (sharing the encrypted record), knowing that the 2nd party can only access the record by supplying their password. It is also possible to provide "M of N" keys, however a good generalised strategy for this has not been established.
 
 This scheme should only ever be used over HTTPS.
 
 == Installation for Rails ~> 3.0 and Devise ~> 1.2
 
-Install DevisePKI gem, it will also install dependencies (such as devise and warden):
+Install DevisePKI gem, it will also install dependencies (such as Devise and Warden):
 
   gem install devise-pki
 
@@ -21,13 +21,13 @@ Add DevisePKI to your Gemfile (and Devise if you weren't using them):
   gem 'devise', '~> 1.2.0'
   gem 'devise-pki'
 
-=== Automatic installation
+=== Automatic Installation
 
 Run the following generator to add DevisePKI’s keychain model to the user model:
 
   rails generate devise_pki MODEL
 
-=== Manual installation
+=== Manual Installation
 
 Manual installation should be performed after Devise has been setup.
 
@@ -52,12 +52,12 @@ or for a model that already exists, define a migration to add DevisePKI to your 
     t.string   :pki_priv_key_pem
   end
 
-== Model configuration
+== Model Configuration
 
 DevisePKI has two configuration settings:
 
 * pki_key_size: The size of the generated RSA keys (512 to 4096, remembering that larger key sizes take exponentially longer to create and might need to be handled in a background task).
-* pki_default_enc:  The default symetric encryption scheme. The default is AES256OFB, and a list can be found by running:
+* pki_default_enc:  The default symmetric encryption scheme. The default is AES256OFB, and a list can be found by running:
 
   irb> puts *OpenSSL::Cipher.ciphers
 
@@ -112,9 +112,9 @@ DevisePKI supports ActiveRecord and Mongoid, like Devise.
  
 * Fork the project.
 * Make your feature addition or bug fix.
-* Add tests for it. This is important so I don't break it in a future version unintentionally.
-* Commit, do not mess with rakefile, version, or history. (if you want to have your own version, that is fine but bump version in a commit by itself I can ignore when I pull)
-* Send me a pull request. Bonus points for topic branches.
+* Add tests for it. This is important so I don't break it unintentionally in a future version.
+* Commit, do not mess with rakefile, version, or history. (It is fine to have your own version, but bump version in a commit by itself I can ignore when I pull.)
+* Send me a pull request.
 
 == Copyright
 
