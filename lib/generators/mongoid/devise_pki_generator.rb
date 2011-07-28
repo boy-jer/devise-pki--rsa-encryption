@@ -5,7 +5,7 @@ module Mongoid
     class DevisePkiGenerator < Rails::Generators::NamedBase
       source_root File.expand_path("../templates", __FILE__)
      
-      def copy_user_asset_key_model
+      def copy_asset_key
         path = File.join("app","models", "#{file_path}_asset_key.rb")
         template "asset_key.rb", path
       end

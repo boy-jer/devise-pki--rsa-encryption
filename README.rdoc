@@ -1,5 +1,7 @@
 = DevisePKI
 
+*IMPORTANT:* This code is incomplete, and does not have any test framework to validate the security that it is supposed to supply. Till I have time to write coverage tests to verify that there is no plaintext leakage for each of the ORM's this code should not be put in any production environment. It is currently under heavy development and the ActiveRecord support is incomplete, however I am using it in a mongoid rails-3.1 application successfully. If you think this module is going to be useful to you send me a message and I will try and prioritize the features you need. 
+
 It adds support to devise[http://github.com/plataformatec/devise] for public key infrastructure (PKI).
 
 DevisePKI currently only supports Rails 3. While the core cyphers and underlying functionality is rigidly defined, the user API is currently in a state of flux and may change to accommodate other ORM's. 
@@ -64,8 +66,6 @@ DevisePKI has two configuration settings:
 == Usage
 
 For each model that has encrypted data use the following:
-
-  class 
 
   class CreditCard
     include Mongoid::Document

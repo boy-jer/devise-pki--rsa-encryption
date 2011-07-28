@@ -10,6 +10,8 @@ module DevisePki
         inject_into_file(path, "pkikey, :", :after => "devise :") if File.exists?(path)
       end
       
+      hook_for :orm      
+      
       def add_config_options_to_initializer
         devise_initializer_path = "config/initializers/devise.rb"
         if File.exist?(devise_initializer_path)
@@ -32,12 +34,6 @@ CONTENT
           end
         end
       end
-
-      hook_for :orm do |resp|
-        STDERR.puts resp.inspect
-      end
-      
-      nil
     end
   end
 end
